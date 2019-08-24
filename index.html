@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="setBase">
+        <p>excahneg base on {{ base }}</p>
+        <input v-model="base">
+    </div>
+    <div id="setAmount">
+        <p>excahneg amount is {{ amount }}</p>
+        <input v-model="amount">
+    </div>
+    <div>
+        <button onclick="getData.fetchData(setBase.base), setAmount.setAmount(setAmount.amount)">submit</button>
+    </div>
+    <div>
+        <ul id="getData" class="demo">
+            <div v-for="(value, name) in object" v-bind:amount="amount">
+                {{ name }}: {{ value * amount}}
+            </div>
+        </ul>
+    </div>
+</body>
+
+<script>
+    var getData = new Vue({
+        el: '#getData',
+        data: {
+            object: {},
+            amount: 1,
+        },
+        methods: {
+            fetchData: function (base) {
+                axios.get(`https://api.exchangeratesapi.io/latest?base=${base}`)
+                    .then(function (response) {
+                        // handle success
+                        getData.object = response.data.rates;
+                        console.log(response.data.rates);
+                    });
+            }
+        }
+    });
+
+    var setBase = new Vue({
+        el: '#setBase',
+        data: {
+            base: 'CAD'
+        }
+    });
+
+    var setAmount = new Vue({
+        el: '#setAmount',
+        data: {
+            amount: '1'
+        },
+        methods: {
+            setAmount: function (amount) {
+                getData.amount = amount;
+            }
+        }
+    });
+
+    getData.fetchData(setBase.base);
+    setAmount.setAmount(setAmount.amount);
+</script>
+
+</html>
